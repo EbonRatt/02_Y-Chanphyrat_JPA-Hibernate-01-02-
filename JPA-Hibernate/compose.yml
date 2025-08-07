@@ -1,0 +1,13 @@
+services:
+  postgresDb:
+    image: postgres:latest
+    container_name: postgreDb
+    ports:
+      - "8081:5432"
+    environment:
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - backupDb:/var/lib/postgresql/data
+
+volumes:
+  backupDb:
