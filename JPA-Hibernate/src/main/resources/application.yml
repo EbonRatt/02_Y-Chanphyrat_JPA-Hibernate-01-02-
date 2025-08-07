@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: JPA-Hibernate
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:8081/postgres
+    password: 123
+  jpa:
+    hibernate:
+      ddl-auto: update
