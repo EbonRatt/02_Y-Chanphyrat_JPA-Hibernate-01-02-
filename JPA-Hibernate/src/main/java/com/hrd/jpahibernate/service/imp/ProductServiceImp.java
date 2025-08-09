@@ -1,5 +1,6 @@
 package com.hrd.jpahibernate.service.imp;
 
+import com.hrd.jpahibernate.exception.ProductNotFoundException;
 import com.hrd.jpahibernate.model.entity.Product;
 import com.hrd.jpahibernate.model.reponse.ItemResponse;
 import com.hrd.jpahibernate.model.reponse.Pagination;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImp extends CRUDRepo implements ProductService{
+public class ProductServiceImp extends CRUDRepo implements ProductService {
 
 
     private final ProductMapper productMapper;
@@ -38,20 +39,28 @@ public class ProductServiceImp extends CRUDRepo implements ProductService{
 
     @Override
     public ItemResponse getAllProducts(int pageNumber, int pageSize) {
-        List<Product> productList = getAllItems(pageNumber,pageSize);
-        Pagination pagination = getPagination(pageNumber,pageSize);
-        return itemMapper.toItemResponse(productList,pagination);
+        List<Product> productList = getAllItems(pageNumber, pageSize);
+        Pagination pagination = getPagination(pageNumber, pageSize);
+        return itemMapper.toItemResponse(productList, pagination);
     }
 
     @Override
     public ProductResponse getProductById(Long id) {
-        return productMapper.toProductResponse(findItem(id));
+        Product product = findItem(id);
+        if (product == null) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
+        }
+        return productMapper.toProductResponse(product);
     }
 
     @Override
     @Transactional
     public ProductResponse deleteById(Long id) {
-        return productMapper.toProductResponse(deleteItem(id));
+        Product product = findItem(id);
+        if (product == null) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
+        }
+        return productMapper.toProductResponse(deleteItem(product));
     }
 
     @Override
@@ -67,6 +76,6 @@ public class ProductServiceImp extends CRUDRepo implements ProductService{
     @Override
     @Transactional
     public ProductResponse updateProduct(ProductRequest product, Long id) {
-        return productMapper.toProductResponse(updateItem(product,id));
+        return productMapper.toProductResponse(updateItem(product, id));
     }
 }

@@ -6,8 +6,27 @@ services:
       - "8081:5432"
     environment:
       POSTGRES_PASSWORD: 123
+    networks:
+      - ZoneA
     volumes:
       - backupDb:/var/lib/postgresql/data
 
+  my-api:
+    image: my-spring-app:latest
+    container_name: my-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING.DATASOURCE.URL: jdbc:postgresql://postgreDb:5432/postgres
+      SPRING.DATASOURCE.PASSWORD: 123
+      SPRING.DATASOURCE.USERNAME: postgres
+    networks:
+      - ZoneA
+    depends_on:
+      - postgresDb
+
 volumes:
   backupDb:
+
+networks:
+  ZoneA:

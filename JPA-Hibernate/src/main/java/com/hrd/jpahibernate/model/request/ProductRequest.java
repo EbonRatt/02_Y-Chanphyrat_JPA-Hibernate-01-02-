@@ -1,9 +1,7 @@
 package com.hrd.jpahibernate.model.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,17 +16,23 @@ import java.math.BigDecimal;
 public class ProductRequest {
 
     @NotBlank(message = "Name Product Must Be Not Empty")
-    @NotNull(message = "Can't Be Null")
-    @Min(value = 150)
+    @Size(max = 150)
+    @Schema(
+            defaultValue = "name"
+    )
     private String name;
 
-    @NotBlank(message = "Price Must Be Input")
-    @NotNull(message = "Can't Be Null")
-    @Positive(message = "Positive Number Only")
+    @NotNull(message = "Price must be input")
+    @DecimalMin(value = "0.00", inclusive = true, message = "Price must be >= 0.00")
+    @Digits(integer = 10, fraction = 2, message = "Price must have at most 0.00")
     private BigDecimal price;
 
-    @NotBlank(message = "Quantity Must Be Input")
-    @NotNull(message = "Can't Be Null")
+    @NotNull(message = "Quantity must be input")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    @Max(value = 9999, message = "Quantity must be at most 9999")
+    @Schema(
+            defaultValue = "1"
+    )
     private Integer quantity;
 
 }

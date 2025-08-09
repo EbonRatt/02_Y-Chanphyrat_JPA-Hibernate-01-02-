@@ -1,5 +1,6 @@
 package com.hrd.jpahibernate.repository;
 
+import com.hrd.jpahibernate.exception.ProductNotFoundException;
 import com.hrd.jpahibernate.model.entity.Product;
 import com.hrd.jpahibernate.model.reponse.Pagination;
 import com.hrd.jpahibernate.model.request.ProductRequest;
@@ -18,24 +19,22 @@ public abstract class CRUDRepo {
 
     public void insertItem(Product product) {
         entityManager.persist(product);
-
     }
 
     public Product findItem(Long id) {
         return entityManager.find(Product.class,id);
     }
 
-    public Product deleteItem(Long id) {
-        Product product = findItem(id);
+    public Product deleteItem(Product product) {
         entityManager.remove(product);
         return product;
     }
 
     public Product updateItem(ProductRequest product, Long id){
         Product newProduct = findItem(id);
+        entityManager.detach(newProduct);
 
         if(newProduct != null){
-            newProduct.setId(id);
             newProduct.setName(product.getName());
             newProduct.setPrice(product.getPrice());
             newProduct.setQuantity(product.getQuantity());
